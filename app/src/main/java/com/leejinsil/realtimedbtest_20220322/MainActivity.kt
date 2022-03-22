@@ -1,11 +1,9 @@
 package com.leejinsil.realtimedbtest_20220322
 
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.leejinsil.realtimedbtest_20220322.adapters.ChattingRecyclerAdapter
 import com.leejinsil.realtimedbtest_20220322.datas.ChattingData
@@ -31,34 +29,34 @@ class MainActivity : BaseActivity() {
 
     override fun setupEvents() {
 
-        btnSend.setOnClickListener {
-
-//            realtimeDb 의 항목 중, message 항목에 변화가 생길 때
-            realtimeDB.getReference("message").addValueEventListener( object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
+ //       realtimeDb 의 항목 중, message 항목에 변화가 생길 때
+        realtimeDB.getReference("message").addValueEventListener( object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
 
 //                    파이어베이스의 DB내용 변경 => 이 함수를 실행시켜줌
 
 //                    snapshot변수 : 현재 변경된 상태 => 자녀가 몇 개인지 추출.
 
-                    messageCount = snapshot.childrenCount
+                messageCount = snapshot.childrenCount
 
 //                    snapshot => 마지막 자녀 (최신 채팅 메세지) 추출 => ChattingData로 변환 + 목록에 추가.
 
-                    mChattingList.add( ChattingData(
-                        snapshot.children.last().child("content").value.toString(),
-                        snapshot.children.last().child("createdAt").value.toString()
-                    ) )
+                mChattingList.add( ChattingData(
+                    snapshot.children.last().child("content").value.toString(),
+                    snapshot.children.last().child("createdAt").value.toString()
+                ) )
 
-                    mAdapter.notifyDataSetChanged()
+                mAdapter.notifyDataSetChanged()
 
-                }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
 
-                }
+            }
 
-            } )
+        } )
+
+        btnSend.setOnClickListener {
 
             val inputContent = edtContent.text.toString()
 
